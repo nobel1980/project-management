@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('title', 'Create New Issue')
 
 @section('content')
     <div class="container mt-5">
-        <h2>Create New Issue for Project: {{ $project->name }}</h2>
+        <h2>Project: {{ $project->name }}</h2>
 
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -45,6 +45,19 @@
                     <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                     <option value="Approved" {{ old('status') == 'Approved' ? 'selected' : '' }}>Approved</option>
                     <option value="Completion Failed" {{ old('status') == 'Completion Failed' ? 'selected' : '' }}>Completion Failed</option>
+                </select>
+            </div>
+
+            <!-- Developer Assignment Dropdown -->
+            <div class="form-group mt-3">
+                <label for="assigned_user_id">Assign Developer</label>
+                <select name="assigned_user_id" class="form-control" id="assigned_user_id">
+                    <option value="">Select Developer</option>
+                    @foreach ($developers as $developer)
+                        <option value="{{ $developer->id }}" {{ old('assigned_user_id') == $developer->id ? 'selected' : '' }}>
+                            {{ $developer->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 

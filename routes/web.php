@@ -34,9 +34,12 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'role:Administrator'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::post('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+    Route::get('/projects/index', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+    //Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::post('/issues/create', [IssueController::class, 'create'])->name('issues.create');
-    Route::post('/issues/assign', [IssueController::class, 'assign'])->name('issues.assign');
-    Route::post('/issues/update-status', [IssueController::class, 'updateStatus'])->name('issues.updateStatus');
+    //Route::post('/issues/assign', [IssueController::class, 'assign'])->name('issues.assign');
+    //Route::post('/issues/update-status', [IssueController::class, 'updateStatus'])->name('issues.updateStatus');
 });
 /*
 Route::get('/admin', [AdminController::class, 'index'])->middleware('role:Administrator');

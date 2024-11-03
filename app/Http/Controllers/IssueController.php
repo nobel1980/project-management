@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Issue;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class IssueController extends Controller
@@ -16,12 +17,17 @@ class IssueController extends Controller
     public function index(Project $project)
     {
         $issues = $project->issues;
+        $issues = Issue::with('assignedUser')->get();
+
         return view('issues.index', compact('project', 'issues'));
     }
     
-    public function create(Project $project)
+    public function create($projectId)
     {
-        return view('issues.create', compact('project'));
+        $project = Project::findOrFail($projectId);
+        $developers = User::where('role', 'Developer')->get(); // Adjust if using a different role column or system
+    
+        return view('issues.create', compact('project', 'developers'));
     }
 
     /**
@@ -34,9 +40,11 @@ class IssueController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'description' => 'required|string',
             'requested_date' => 'required|date',
             'tentative_completion_date' => 'required|date|after_or_equal:requested_date',
             'status' => 'required|in:Open,In Progress,Approved',
+            'assigned_user_id' => 'nullable|exists:users,id',
         ]);
     
         $project->issues()->create($request->all());
@@ -62,7 +70,9 @@ class IssueController extends Controller
      */
     public function edit(Project $project, Issue $issue)
     {
-        return view('issues.edit', compact('project', 'issue'));
+        //$project = Project::findOrFail($projectId);
+        $developers = User::where('role', 'Developer')->get();
+        return view('issues.edit', compact('project', 'issue', 'developers'));
     }
 
     /**
@@ -79,6 +89,7 @@ class IssueController extends Controller
             'requested_date' => 'required|date',
             'tentative_completion_date' => 'required|date|after_or_equal:requested_date',
             'status' => 'required|in:Open,In Progress,Approved',
+            'assigned_user_id' => 'nullable|exists:users,id',
         ]);
     
         $issue->update($request->all());

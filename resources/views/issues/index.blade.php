@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('title', 'Issues')
 
@@ -20,6 +20,7 @@
                         <th>Requested Date</th>
                         <th>Tentative Completion Date</th>
                         <th>Status</th>
+                        <th>Developer</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -41,6 +42,7 @@
                                     <span class="badge bg-danger">Completion Failed</span>
                                 @endif
                             </td>
+                            <td>{{ $issue->assignedUser ? $issue->assignedUser->name : 'Unassigned' }}</td>
                             <td>
                                 <a href="{{ route('projects.issues.edit', [$project->id, $issue->id]) }}" class="btn btn-sm btn-warning">Edit</a>
                                 <form action="{{ route('projects.issues.destroy', [$project->id, $issue->id]) }}" method="POST" style="display:inline-block;">
@@ -56,3 +58,6 @@
         @endif
     </div>
 @endsection
+
+
+

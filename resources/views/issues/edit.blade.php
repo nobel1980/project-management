@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.sidebar')
 
 @section('title', 'Edit Issue')
 
@@ -47,6 +47,18 @@
                     <option value="In Progress" {{ old('status', $issue->status) == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                     <option value="Approved" {{ old('status', $issue->status) == 'Approved' ? 'selected' : '' }}>Approved</option>
                     <option value="Completion Failed" {{ old('status', $issue->status) == 'Completion Failed' ? 'selected' : '' }}>Completion Failed</option>
+                </select>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="assigned_user_id">Assign Developer</label>
+                <select name="assigned_user_id" class="form-control" id="assigned_user_id">
+                    <option value="">Select Developer</option>
+                    @foreach ($developers as $developer)
+                        <option value="{{ $developer->id }}" {{ old('assigned_user_id') == $developer->id ? 'selected' : '' }}>
+                            {{ $developer->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 
