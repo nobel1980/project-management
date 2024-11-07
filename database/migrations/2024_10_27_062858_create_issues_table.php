@@ -20,8 +20,9 @@ class CreateIssuesTable extends Migration
             $table->text('description')->nullable();
             $table->date('requested_date');
             $table->date('tentative_completion_date');
-            $table->enum('status', ['Open', 'In Progress', 'Approved', 'Completion Failed'])
+            $table->enum('status', ['Open', 'In Progress', 'Done','Review','Approved', 'Failed'])
                   ->default('Open');
+            $table->foreignId('assigned_user_id')->nullable()->constrained('users');      
             $table->timestamps();
         });
     }

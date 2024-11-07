@@ -15,9 +15,10 @@ class RoleMiddleware
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle($request, Closure $next, ...$roles)
-    {
-        if (!in_array($request->user()->role, $roles)) {
-            return redirect('/'); // Redirect to the homepage if unauthorized
+    {        
+        if (!in_array($request->user()->role, $roles)) {            
+            //return redirect('/'); // Redirect to the homepage if unauthorized
+            abort(403, 'Unauthorized');
         }
     
         return $next($request);

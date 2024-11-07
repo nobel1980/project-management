@@ -5,7 +5,30 @@
 @section('content')
     <div class="container mt-5">
         <h2>Edit Issue for Project: {{ $project->name }}</h2>
-
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('admin.dashboard') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.index') }}">Projects</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.issues.index') }}">{{ $project->name }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.index') }}">Issues</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $project->name }}</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Edit Project</h4>
+            <a href="{{ route('projects.index') }}" class="btn btn-primary">
+            <i class="bi bi-reply-fill"></i> Back
+            </a>
+        </div>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>

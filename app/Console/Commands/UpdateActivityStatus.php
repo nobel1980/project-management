@@ -17,7 +17,7 @@ class UpdateIssueStatus extends Command
                               ->get();
 
         foreach ($issues as $issue) {
-            $issue->update(['status' => 'Completion Failed']);
+            $issue->update(['status' => 'Failed']);
         }
 
         $this->info('Issue statuses updated successfully.');

@@ -1,11 +1,31 @@
 @extends('layouts.sidebar')
 
-@section('title', 'Create New Issue')
-
 @section('content')
     <div class="container mt-5">
         <h2>Project: {{ $project->name }}</h2>
-
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('admin.dashboard') }}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.index') }}">Projects</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.index') }}">{{ $project->name }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('projects.index') }}">Issues</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Create</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Create Project Issue</h4>
+            <a href="{{ route('projects.index') }}" class="btn btn-success">
+            <i class="bi bi-reply-fill"></i> Back
+            </a>
+        </div>
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -20,33 +40,25 @@
             @csrf
             <div class="form-group">
                 <label for="name">Issue Name</label>
-                <input type="text" name="name" class="form-control" id="name" placeholder="Enter issue name" value="{{ old('name') }}" required>
+                <input type="text" name="name" class="form-control" id="name" placeholder="" value="{{ old('name') }}" required>
             </div>
 
             <div class="form-group mt-3">
                 <label for="description">Issue Description</label>
-                <textarea name="description" class="form-control" id="description" rows="3" placeholder="Enter issue description" required>{{ old('description') }}</textarea>
+                <textarea name="description" class="form-control" id="description" rows="3" placeholder="" required>{{ old('description') }}</textarea>
             </div>
 
             <div class="form-group mt-3">
-                <label for="requested_date">Requested Date</label>
+                <label for="requested_date">Initial Date</label>
                 <input type="date" name="requested_date" class="form-control" id="requested_date" value="{{ old('requested_date') }}" required>
             </div>
 
             <div class="form-group mt-3">
-                <label for="tentative_completion_date">Tentative Completion Date</label>
+                <label for="tentative_completion_date">Completion Date</label>
                 <input type="date" name="tentative_completion_date" class="form-control" id="tentative_completion_date" value="{{ old('tentative_completion_date') }}" required>
             </div>
 
-            <div class="form-group mt-3">
-                <label for="status">Status</label>
-                <select name="status" class="form-control" id="status" required>
-                    <option value="Open" {{ old('status') == 'Open' ? 'selected' : '' }}>Open</option>
-                    <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                    <option value="Approved" {{ old('status') == 'Approved' ? 'selected' : '' }}>Approved</option>
-                    <option value="Completion Failed" {{ old('status') == 'Completion Failed' ? 'selected' : '' }}>Completion Failed</option>
-                </select>
-            </div>
+
 
             <!-- Developer Assignment Dropdown -->
             <div class="form-group mt-3">

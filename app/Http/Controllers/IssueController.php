@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Issue;
 use App\Models\Project;
+use App\Models\Issue;
 use App\Models\User;
+use App\Models\IssueStatusHistory;
 use Illuminate\Http\Request;
 
 class IssueController extends Controller
@@ -17,8 +18,7 @@ class IssueController extends Controller
     public function index(Project $project)
     {
         $issues = $project->issues;
-        $issues = Issue::with('assignedUser')->get();
-
+        $issues = $project->issues()->paginate(5); 
         return view('issues.index', compact('project', 'issues'));
     }
     
@@ -43,12 +43,27 @@ class IssueController extends Controller
             'description' => 'required|string',
             'requested_date' => 'required|date',
             'tentative_completion_date' => 'required|date|after_or_equal:requested_date',
-            'status' => 'required|in:Open,In Progress,Approved',
+            'status' => Issue::STATUS_OPEN,  // Default to "Open"
             'assigned_user_id' => 'nullable|exists:users,id',
         ]);
     
-        $project->issues()->create($request->all());
-        return redirect()->route('projects.issues.index', $project->id)->with('success', 'Issue created successfully.');
+        // Create the issue
+        $issue = $project->issues()->create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'requested_date' => $request->requested_date,
+            'tentative_completion_date' => $request->tentative_completion_date,
+            'status' => Issue::STATUS_OPEN, // Default to "Open"
+            'assigned_user_id' => $request->assigned_user_id,
+        ]);
+
+        // Create an entry in issue_status_histories for the initial "Open" status
+        $issue->statusHistories()->create([
+            'status' => Issue::STATUS_OPEN,
+            'changed_at' => now(),
+        ]);
+
+    return redirect()->route('projects.issues.index', $project->id)->with('success', 'Issue created successfully.');
     }
 
     /**
@@ -96,6 +111,51 @@ class IssueController extends Controller
         return redirect()->route('projects.issues.index', $project->id)->with('success', 'Issue updated successfully.');
     }
 
+
+    public function create1(Request $request)
+{
+    // Only accessible to Admins
+    $issue = Issue::create([
+        'title' => $request->title,
+        'description' => $request->description,
+        'status' => Issue::STATUS_OPEN,
+        'assigned_user_id' => $request->assigned_user_id, // Assign developer here
+    ]);
+    
+    return redirect()->route('issues.index')->with('success', 'Issue created and assigned to developer.');
+}
+
+public function updateStatus(Request $request, Issue $issue)
+{
+    $user = auth()->user();
+
+    if ($user->role === 'Developer') {
+        if ($request->status === Issue::STATUS_IN_PROGRESS) {
+            $issue->update(['status' => Issue::STATUS_IN_PROGRESS]);
+        } elseif ($request->status === Issue::STATUS_DONE) {
+            $issue->update(['status' => Issue::STATUS_DONE]);
+        }
+    } elseif ($user->role === 'Admin') {
+        if ($request->status === Issue::STATUS_REVIEW || $request->status === Issue::STATUS_COMPLETE) {
+            $issue->update(['status' => $request->status]);
+        }
+    }
+
+    return redirect()->route('issues.show', $issue)->with('success', 'Issue status updated.');
+}
+
+public function updateStatus1(Request $request, $id)
+{
+    $issue = Issue::findOrFail($id);
+    $newStatus = $request->status;
+
+    // Update status and track in history
+    $issue->updateStatus($newStatus);
+
+    return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+}
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -106,5 +166,11 @@ class IssueController extends Controller
     {
         $issue->delete();
         return redirect()->route('projects.issues.index', $project->id)->with('success', 'Issue deleted successfully.');
+    }
+
+    public function showTimeline()
+    {
+        $issues = Issue::with('statusHistories')->get(); // Fetch issues with status histories
+        return view('issues.timeline', compact('issues'));
     }
 }

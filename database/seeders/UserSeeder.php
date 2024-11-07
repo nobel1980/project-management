@@ -16,24 +16,44 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'name' => 'Admin User',
+            'name' => 'Masum Ahmed',
             'email' => 'admin@genex.com',
             'password' => Hash::make('password'),
-            'role' => User::ROLE_ADMIN,
+            'role' => User::ADMIN,
         ]);
     
         User::create([
-            'name' => 'Developer User',
-            'email' => 'developer@genex.com',
+            'name' => 'Shahidul',
+            'email' => 'dev1@genex.com',
             'password' => Hash::make('password'),
-            'role' => User::ROLE_DEV,
+            'role' => User::DEVELOPER,
+        ]);
+
+        User::create([
+            'name' => 'Tuhin',
+            'email' => 'dev2@genex.com',
+            'password' => Hash::make('password'),
+            'role' => User::DEVELOPER,
+        ]);
+
+        User::create([
+            'name' => 'Sumon',
+            'email' => 'dev3@genex.com',
+            'password' => Hash::make('password'),
+            'role' => User::DEVELOPER,
         ]);
     
         User::create([
-            'name' => 'Regular User',
-            'email' => 'user@genex.com',
+            'name' => 'Zaman',
+            'email' => 'user1@genex.com',
             'password' => Hash::make('password'),
-            'role' => User::ROLE_USER,
+            'role' => User::USER,
+        ]);
+        User::create([
+            'name' => 'Rakim',
+            'email' => 'user2@genex.com',
+            'password' => Hash::make('password'),
+            'role' => User::USER,
         ]);
     }
 }
