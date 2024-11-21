@@ -14,9 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with('issues')->get();
-        //return view('projects.index', compact('projects'));
-        $projects = Project::paginate(5); 
+        $projects = Project::with('issues')->orderBy('created_at', 'desc')->paginate(5);
         return view('projects.index', compact('projects'));
     }
     

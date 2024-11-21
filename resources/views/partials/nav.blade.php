@@ -34,21 +34,7 @@
             </li>
 
             <!-- Issue Menu with Submenu -->
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#issueSubmenu" role="button" aria-expanded="false" aria-controls="issueSubmenu">
-                    <i class="fas fa-bug"></i>
-                    <span class="nav-link-text">Issues</span>
-                    <i class="fas fa-chevron-down float-end"></i>
-                </a>
-                <ul class="collapse submenu" id="issueSubmenu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('issues.create') }}">
-                            <i class="fas fa-plus-circle"></i>
-                            <span class="nav-link-text">Create Issue</span>
-                        </a>
-                    </li>                                   
-                </ul>
-            </li>
+
             @endcan
             @can('access-developer')
             <li class="nav-item">
@@ -118,6 +104,11 @@
                 </a>
             </li>
             @endcanany
+            <li class="nav-item">
+                <a class="nav-link" href="/issues/timeline">
+                    <i class="fas fa-list-alt"></i> Timeline
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-cog"></i> Settings

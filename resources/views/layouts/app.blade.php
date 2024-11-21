@@ -69,33 +69,6 @@
         <h5 class="ms-2">Project Dashboard</h5>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar p-3" id="sidebar">
-        <h5>Navigation</h5>
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="{{ route('projects.index') }}">
-                    <i class="fas fa-tasks"></i> Projects
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-list-alt"></i> Issues
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </li>
-        </ul>
-    </div>
-
     <!-- Main Content -->
     <div class="main-content" id="mainContent">
         @yield('content')

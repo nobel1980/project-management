@@ -112,48 +112,40 @@ class IssueController extends Controller
     }
 
 
-    public function create1(Request $request)
-{
-    // Only accessible to Admins
-    $issue = Issue::create([
-        'title' => $request->title,
-        'description' => $request->description,
-        'status' => Issue::STATUS_OPEN,
-        'assigned_user_id' => $request->assigned_user_id, // Assign developer here
-    ]);
-    
-    return redirect()->route('issues.index')->with('success', 'Issue created and assigned to developer.');
-}
+    public function updateStatus(Request $request, Issue $issue)
+    {
+        $user = auth()->user();
 
-public function updateStatus(Request $request, Issue $issue)
-{
-    $user = auth()->user();
+        // Store the allowed statuses for each role
+        $allowedStatuses = [
+            'Developer' => [Issue::STATUS_IN_PROGRESS, Issue::STATUS_DONE],
+            'Administrator' => [Issue::STATUS_APPROVED]
+        ];
+        
 
-    if ($user->role === 'Developer') {
-        if ($request->status === Issue::STATUS_IN_PROGRESS) {
-            $issue->update(['status' => Issue::STATUS_IN_PROGRESS]);
-        } elseif ($request->status === Issue::STATUS_DONE) {
-            $issue->update(['status' => Issue::STATUS_DONE]);
-        }
-    } elseif ($user->role === 'Admin') {
-        if ($request->status === Issue::STATUS_REVIEW || $request->status === Issue::STATUS_COMPLETE) {
+        // Check if the user's role allows the requested status
+        if (array_key_exists($user->role, $allowedStatuses) && in_array($request->status, $allowedStatuses[$user->role])) {
             $issue->update(['status' => $request->status]);
+
+            // Log the status history after a successful update
+            $issue->statusHistories()->create([
+                'status' => $request->status,
+                'changed_at' => now(),
+            ]);
+
+            return response()->json(['message' => 'Issue status updated successfully.']);
         }
+
+        // If the status update is not allowed, return an error
+        return response()->json(['message' => 'Unauthorized status update.'], 403);
     }
 
-    return redirect()->route('issues.show', $issue)->with('success', 'Issue status updated.');
-}
+    public function getIssues()
+    {
+        $issues = Issue::with(['statusHistories', 'assignedUser'])->get();
+        return response()->json($issues);
+    }
 
-public function updateStatus1(Request $request, $id)
-{
-    $issue = Issue::findOrFail($id);
-    $newStatus = $request->status;
-
-    // Update status and track in history
-    $issue->updateStatus($newStatus);
-
-    return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
-}
 
 
     /**
